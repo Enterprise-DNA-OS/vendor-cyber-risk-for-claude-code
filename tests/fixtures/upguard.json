@@ -1,0 +1,13 @@
+{
+  "vendors": [
+    {
+      "name": "Json Partner",
+      "primary_domain": "json-partner.example",
+      "score": 820,
+      "labels": [
+        "Customer Data"
+      ],
+      "extra": "Preserved"
+    }
+  ]
+}

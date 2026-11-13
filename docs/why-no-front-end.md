@@ -1,24 +1,7 @@
-# Why there is no front end
+# Why this desk has no front end
 
-UpGuard Vendor Risk is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+Vendor reviews are records and decisions: who owns the service, what evidence was checked, which findings remain open, and who accepted an exception until which date. A coding agent can work through the same CLI as an operator. Read-only HTML views give managers a useful report without another application to maintain.
 
-That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
+UpGuard also supplies continuous internet-facing monitoring, a proprietary rating service, vendor portals, shared security profiles and notifications. This repository does not implement those services or imply that an imported score stays current. A browser interface also gives multi-user authentication, forms, mobile convenience and simultaneous collaboration. There is no mobile or offline synchronisation here. The local embedded store is single-process.
 
-## What you gain
-
-- **Better answers.** A dashboard shows what the vendor decided to chart. Here you ask your own question, in your own words, and get it answered against your own data.
-- **No seats.** Everyone who needs to look can look. The bill does not grow with headcount.
-- **Your data in your Postgres.** Plain tables. Back them up, query them from anything, leave any time. There is no export step because there is nothing to leave.
-- **A process that matches you.** When your way of working changes, you add a command. You do not wait for a feature request to clear.
-
-## What you give up
-
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
-- **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
-
-## Who this fits
-
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep UpGuard Vendor Risk. If you need the answers more than the screens, this is cheaper, faster and yours.
-
-Installed and run for you: https://enterprisedna.co/omni/instead-of/upguard
+Use the desk for assessment administration. Keep external monitoring where needed. Enterprise DNA builds the chosen connections, a web view or intake forms, and access controls into a customised installation. Do not expose the database owner's connection or private HTML reports publicly.

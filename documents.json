@@ -1,11 +1,63 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "vendor-review",
+    "title": "Vendor security review pack",
+    "for_each": "select id,name from vendors order by name",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Service and responsibility",
+        "layout": "record",
+        "sql": "select name,domain,owner,criticality,service,country,personal_data,privacy_scope,transfer_mode,transfer_basis,review_due from vendors where id=$1"
+      },
+      {
+        "title": "Evidence reviewed",
+        "sql": "select name,reference,verified_by,verified_on,valid_until from evidence where vendor_id=$1 order by valid_until"
+      },
+      {
+        "title": "Recorded findings",
+        "sql": "select name,risk_score,owner,due_on,state,waived from finding_position where vendor_id=$1 order by risk_score desc"
+      },
+      {
+        "title": "Assessment history",
+        "sql": "select name,scope,state,reviewer,decided_on,next_review_on,rationale from assessments where vendor_id=$1 order by created_at"
+      }
+    ]
+  },
+  {
+    "name": "remediation-plan",
+    "title": "Vendor remediation plan",
+    "for_each": "select distinct v.id,v.name from vendors v join findings f on f.vendor_id=v.id where f.state='open'",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Actions for review",
+        "note": "Draft only. Review and send through your normal communication process.",
+        "sql": "select name,likelihood,impact,risk_score,owner,due_on,waived from finding_position where vendor_id=$1 and state='open' order by due_on"
+      },
+      {
+        "title": "Accepted exceptions",
+        "sql": "select w.name,w.reason,w.approver,w.expires_on,w.revoked from waivers w join findings f on f.id=w.finding_id where f.vendor_id=$1 order by w.expires_on"
+      }
+    ]
+  },
+  {
+    "name": "decision-record",
+    "title": "Assessment decision record",
+    "for_each": "select id,name from assessments where state<>'open'",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Decision",
+        "layout": "record",
+        "sql": "select name,scope,state,reviewer,decided_on,next_review_on,rationale from assessments where id=$1"
+      },
+      {
+        "title": "Frozen evidence and findings",
+        "layout": "record",
+        "note": "Point-in-time record. Later changes do not rewrite this decision. Operator names are recorded statements, not verified digital signatures.",
+        "sql": "select snapshot from assessments where id=$1"
+      }
     ]
   }
 ]

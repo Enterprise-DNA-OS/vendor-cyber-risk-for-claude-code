@@ -1,13 +1,47 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Vendor Cyber Risk for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Vendor risk this week",
+    "subtitle": "Review dates, unresolved findings and evidence expiry",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Review queue",
+        "sql": "select name,owner,criticality,review_due,reason from review_queue order by review_due nulls first"
+      },
+      {
+        "title": "Unresolved risk",
+        "sql": "select vendor,name,risk_score,owner,due_on,waived from finding_position where state='open' order by risk_score desc"
+      }
+    ]
+  },
+  {
+    "name": "dependencies",
+    "title": "Shared provider exposure",
+    "subtitle": "Declared dependencies, including indirect links",
+    "sections": [
+      {
+        "title": "Concentration",
+        "sql": "select provider,dependent_vendors,critical_vendors,affected_vendors from concentration order by dependent_vendors desc"
+      },
+      {
+        "title": "Rating snapshots",
+        "note": "Imported ratings are observations from the stated date. This system does not scan vendors.",
+        "sql": "select name,imported_score,score_observed_on,rating_age_days from vendor_position order by name"
+      }
+    ]
+  },
+  {
+    "name": "evidence",
+    "title": "Evidence and exceptions",
+    "subtitle": "Read the source before making a decision",
+    "sections": [
+      {
+        "title": "Evidence validity",
+        "sql": "select v.name as vendor,e.name,e.reference,e.verified_by,e.verified_on,e.valid_until from evidence e join vendors v on v.id=e.vendor_id order by e.valid_until"
+      },
+      {
+        "title": "Exceptions",
+        "sql": "select v.name as vendor,f.name as finding,w.reason,w.approver,w.expires_on,w.revoked from waivers w join findings f on f.id=w.finding_id join vendors v on v.id=f.vendor_id order by w.expires_on"
       }
     ]
   }

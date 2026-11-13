@@ -1,115 +1,109 @@
-<h1 align="center">Vendor Cyber Risk for Claude Code</h1>
+# Vendor Cyber Risk for Claude Code
 
-<p align="center">
-  <strong>The open-source vendor cyber risk desk that is just a database and Claude Code.</strong>
-</p>
+Own the vendor review record: security questions, evidence, findings, expiring exceptions and the providers behind your suppliers. Free software under the MIT licence. Built by Enterprise DNA for Claude Code, Codex, OpenCode or Cursor.
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+| Do it yourself | We customise it | We run it for you |
+|---|---|---|
+| Install the free version below. | Your questions, rules and UpGuard records mapped into your version. [Book a call](https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=upguard&utm_medium=readme). | Installed, connected and operated through Omni by Enterprise DNA. One setup fee, then a retainer. [See the offer](https://enterprisedna.co/omni/instead-of/upguard). |
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your UpGuard Vendor Risk data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=upguard">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/upguard?utm_source=github&utm_medium=readme&utm_campaign=upguard">How it works</a></td>
-  </tr>
-</table>
-
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-upguard">Instead of UpGuard Vendor Risk</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
-
----
-
-## What is this
-
-Vendor Cyber Risk for Claude Code does the job you pay UpGuard Vendor Risk for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the UpGuard Vendor Risk dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays UpGuard Vendor Risk per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=upguard).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
+This is a vendor assessment desk, not a clone of UpGuard's internet scanning or proprietary rating service. It runs without an API account. Imported ratings are dated observations. Keep your monitoring service where that is required.
 
 ## Quick start
 
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
+Node 20 or 22:
 
 ```bash
 git clone https://github.com/Enterprise-DNA-OS/vendor-cyber-risk-for-claude-code.git
 cd vendor-cyber-risk-for-claude-code
 npm install
+npm test
 npm run demo
+npm run view
+npm run docs
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+The demo has seven fictional vendors, three assessments, five original control questions, three findings, two exceptions and shared provider dependencies. Dates are relative to the seed date. It deliberately includes overdue reviews, stale evidence, expired waivers and unclassified vendors. Re-running seed preserves your changes.
 
-### Use it with your own Postgres or Supabase
+The local PGlite database lives in .data/db. No server is needed. For shared use, set DATABASE_URL to a private PostgreSQL database and run npm run migrate. Seed only a disposable demo database with `npm run seed -- --demo-database`. The owner connection bypasses RLS and must never be exposed to end users. Configure authenticated access, backups and evidence storage before real shared use.
 
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
+## Your first hour: ten things to ask for
 
-## The commands
+1. "Which reviews are overdue, who owns them and how critical are those vendors?" (`node scripts/risk.mjs reviews-due`)
+2. "Which unresolved findings are both overdue and no longer covered by an exception?" (`node scripts/risk.mjs attention`)
+3. "Which service providers do several critical vendors depend on?" (`node scripts/risk.mjs concentration`)
+4. "Which imported ratings are stale or missing?" (`node scripts/risk.mjs rating-freshness`)
+5. "Which suppliers handle personal data without current evidence of safeguards?" (`node scripts/risk.mjs compliance`)
+6. "Which overseas arrangements have no recorded disclosure or processing rationale?" (`node scripts/risk.mjs compliance`)
+7. "Which assessment answers rely on evidence that has expired?" (`node scripts/risk.mjs questionnaire "Harbour annual review"`)
+8. "Which findings are still open but temporarily accepted, and until when?" (`node scripts/risk.mjs waivers`)
+9. "What exact evidence and findings supported a past decision?" (`node scripts/risk.mjs decisions`)
+10. "What needs the Monday meeting across review dates, risk and shared providers?" (`node scripts/risk.mjs weekly-review`)
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
+These are implemented cross-record questions, not claims that UpGuard can never be configured to answer them. Ask /customise to add a question or a field, and /new-view to turn an answer into a branded report.
 
-| Command | What it does |
-|---|---|
-| `/...` | ... |
+## Commands
 
-## Instead of UpGuard Vendor Risk
+- `/vendors`: List vendors and their recorded risk position.
+- `/card`: Read one vendor with all evidence, assessments, findings and notes.
+- `/assessments`: List assessment owners, dates and decisions.
+- `/controls`: Read the original five-question assessment checklist.
+- `/questionnaire`: Review every answer and its evidence for one assessment.
+- `/evidence`: List source references, reviewers and expiry dates.
+- `/findings`: Review likelihood, impact and unresolved risks.
+- `/waivers`: Review accepted exceptions and their expiry dates.
+- `/fourth-parties`: Read the declared providers used by your vendors.
+- `/concentration`: Find providers shared by several vendors, including indirect dependencies.
+- `/reviews-due`: Prepare the next month of vendor reviews.
+- `/rating-freshness`: Find stale imported ratings without treating them as live monitoring.
+- `/decisions`: Read frozen assessment decisions and their evidence.
+- `/audit`: Read recent record changes and the named operator.
+- `/attention`: Triage overdue reviews, findings, expired evidence and expired waivers.
+- `/compliance`: Check missing safeguards records and cross-border review evidence with cited sources.
+- `/check-assessment`: Show precisely what blocks a decision.
+- `/weekly-review`: Prepare the Monday review from attention, reviews-due, concentration and compliance.
+- `/add`: Add a vendor, evidence record, finding or note from the operator brief.
+- `/set`: Change the scope or review date of a vendor.
+- `/open-assessment`: Start a scoped review with a deadline.
+- `/answer`: Record a reviewed answer with its evidence reference.
+- `/resolve-finding`: Close a finding only with a recorded resolution reference.
+- `/waive`: Record an explicitly authorised temporary risk exception.
+- `/revoke-waiver`: End a recorded exception without deleting its history.
+- `/decide`: Record the human decision after checking assessment blockers.
+- `/link`: Add a declared dependency after reading both vendor records.
+- `/log`: Keep an operator note against a vendor.
+- `/import`: Import the documented UpGuard vendor export with a test run first.
+- `/export`: Export every record, including evidence references and decisions.
+- `/draft-remediation`: Prepare a vendor remediation request for human review.
+- `/draft-weekly-review`: Write the weekly review to the drafts folder.
+- `/customise`: add fields or change local policy through a tested forward migration.
+- `/new-view`: add a read-only report.
 
-<!-- TODO(author): how to bring data across from UpGuard Vendor Risk; link docs/replace-upguard.md -->
+All domain actions use `node scripts/risk.mjs`. Use --json for machine output. Names match case-insensitively and IDs by prefix. Ambiguous matches list candidates and exit unsuccessfully. Writes require --actor. Read the exact syntax with help.
 
-## Architecture
+## Decisions that keep their evidence
 
-```
-vendor-cyber-risk-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
-```
+Approval requires complete answers, current evidence, a recorded service scope and no unwaived high-risk finding. An open finding means a conditional decision. Decisions store an immutable snapshot. Later evidence or waiver changes do not rewrite history. A fresh review requires a new assessment. Actor and reviewer names are recorded attribution, not authenticated signatures.
 
-## Built for coding agents
+The five controls are an original checklist. They are not copied from ISO, SIG or any proprietary questionnaire. The compliance command flags missing review evidence against NZ privacy principles 5 and 12 and Australian APPs 8 and 11, with citations. It does not certify compliance or replace the reviewer's judgment. [Rules and source details](docs/compliance.md).
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+## Paperwork and views
 
-## Contributing
+Edit brand.json once for the business name, colours and logo. `npm run docs` renders vendor review packs, draft remediation plans and completed decision records. `npm run view` renders this week's review queue, evidence and exception dates, and shared provider exposure. Both produce escaped, read-only HTML. Draft requests stay in drafts/. Nothing sends or opens a public service.
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+## Bring the vendor list across
 
-## Want it installed and run for you?
+`node scripts/risk.mjs import upguard --file=vendors.csv --as-of=2026-11-13 --actor="Your name" --dry-run`
 
-Enterprise DNA installs Vendor Cyber Risk for Claude Code for your business, migrates your UpGuard Vendor Risk data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+Replace the date with the export's real date. Inspect the result, then remove --dry-run. CSV, raw vendor JSON and the documented JSON array stream are accepted. The four-field vendor export does not include questionnaire or remediation history. [Exact mapping and reconciliation](docs/replace-upguard.md).
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=upguard)
-- Read more: [enterprisedna.co/omni/instead-of/upguard](https://enterprisedna.co/omni/instead-of/upguard?utm_source=github&utm_medium=readme&utm_campaign=upguard)
+## Why own it
 
-## License
+Add your service-specific questions, change the review rules and keep the record without a per-vendor software licence. Database hosting, agent subscriptions, monitoring providers and managed service work have their own costs. [What the free desk does and does not provide](docs/why-no-front-end.md).
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+## Validation
+
+`npm test` creates a temporary database, migrates and seeds it twice, checks imports, approval gates, immutable decisions, dependency cycles, audit attribution and report output. CI runs on Windows and Linux with Node 20 and 22, plus PostgreSQL 16. Fixtures use fictional .example domains. No live scans, email or vendor API calls occur.
+
+## Licence
+
+MIT. Copyright 2026 Enterprise DNA. Independent software, not affiliated with or endorsed by UpGuard.
